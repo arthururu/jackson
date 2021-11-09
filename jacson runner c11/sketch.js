@@ -1,38 +1,52 @@
-var jackson, jackson_runner ;
-var path, invisiblepath, pathImage ;
+var path,boy, leftBoundary,rightBoundary;
+var pathImg,boyImg;
+var i;
+
 function preload(){
-  //imagens pré-carregadas
-  jackson_runner = loadAnimation("Runner-1.png","Runner-2.png") ;
-  pathImage = loagImage("path.png") ;
+  pathImg = loadImage("path.png");
+  boyImg = loadAnimation("Runner-1.png","Runner-2.png");
 }
 
 function setup(){
+  
   createCanvas(400,400);
-  background("black");
+  
+// Fundo em movimento
+path=createSprite(200,200);
+path.addImage(pathImg);
+path.velocityY = 4;
+path.scale=1.2;
 
-  //crie sprite aqui
-  jackson = crateSprite(180,160,100,150);
-  jackson.addAnimation("running",jackson_runner);
-  jackson.scale = 0.25;
+//criando menino que corre
+boy = createSprite(180,340,30,30);
+boy.scale=0.08;
+boy.addAnimation("JakeRunning",boyImg);
+  
+// crie Boundary (Limite) esquerdo
+leftBoundary=createSprite(0,0,100,800);
+leftBoundary.visible = false;
 
-  path = createSprite(200,200,400,400);
-  path.addImage("path",pathImage);
-  path.velocityY = -4;
-  path.scale = 0.3
-
+//crie Boundary direito
+rightBoundary=createSprite(410,0,100,800);
+rightBoundary.visible = false;
 }
 
 function draw() {
   background(0);
-  path.velocityY = -4;
-
-
-  if(keyDown("UP_ARROW")&& jackson.y >= 190) {
-    jackson.velocityY = -10;
+  path.velocityY = 4;
+  
+  // menino se movendo no eixe X com o mouse
+  boy.x = World.mouseX;
+  
+  edges= createEdgeSprites();
+  boy.collide(edges[3]);
+  boy.collide(leftBoundary);
+  boy.collide(rightBoundary);
+  
+  //código para reiniciar o fundo
+  if(path.y > 400 ){
+    path.y = height/2;
   }
-    if(path.Y < 0){
-      path.Y = path.width/8;
-    }
-    drawsprites();
+  
+  drawSprites();
 }
-
